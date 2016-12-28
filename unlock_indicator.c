@@ -20,11 +20,13 @@
 #include "xcb.h"
 #include "unlock_indicator.h"
 #include "xinerama.h"
+#include "insults.h"
 
 #define BUTTON_RADIUS 90
-#define BUTTON_SPACE (BUTTON_RADIUS + 5)
-#define BUTTON_CENTER (BUTTON_RADIUS + 5)
+#define BUTTON_SPACE (BUTTON_RADIUS + 500)
+#define BUTTON_CENTER (BUTTON_RADIUS + 500)
 #define BUTTON_DIAMETER (2 * BUTTON_SPACE)
+#define TEXT_OFFSET 200
 
 /*******************************************************************************
  * Variables defined in i3lock.c.
@@ -199,6 +201,7 @@ xcb_pixmap_t draw_image(uint32_t *resolution) {
 
         /* Display a (centered) text of the current PAM state. */
         char *text = NULL;
+        char *insult = NULL;
         /* We don't want to show more than a 3-digit number. */
         char buf[4];
 
@@ -214,6 +217,7 @@ xcb_pixmap_t draw_image(uint32_t *resolution) {
                 break;
             case STATE_PAM_WRONG:
                 text = "wrong!";
+                insult = INSULT;
                 break;
             case STATE_I3LOCK_LOCK_FAILED:
                 text = "lock failed!";
@@ -234,14 +238,21 @@ xcb_pixmap_t draw_image(uint32_t *resolution) {
 
         if (text) {
             cairo_text_extents_t extents;
+            cairo_text_extents_t insult_extents;
             double x, y;
 
             cairo_text_extents(ctx, text, &extents);
+            cairo_text_extents(ctx, insult, &insult_extents);
             x = BUTTON_CENTER - ((extents.width / 2) + extents.x_bearing);
             y = BUTTON_CENTER - ((extents.height / 2) + extents.y_bearing);
 
             cairo_move_to(ctx, x, y);
             cairo_show_text(ctx, text);
+            cairo_close_path(ctx);
+
+            x = BUTTON_CENTER - ((insult_extents.width / 2) + insult_extents.x_bearing);
+            cairo_move_to(ctx, x, y + TEXT_OFFSET);
+            cairo_show_text(ctx, insult);
             cairo_close_path(ctx);
         }
 
