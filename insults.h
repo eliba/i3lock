@@ -21,7 +21,7 @@
 
 char *insults[] = {
 
-    "If you keep this secret, this straberry is yours.",
+    "If you keep this secret, this strawberry is yours.",
     "Just what do you think you're doing Dave?",
     "It can only be attributed to human error.",
     "That's something I cannot allow to happen.",
