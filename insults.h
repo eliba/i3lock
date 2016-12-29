@@ -21,6 +21,16 @@
 
 char *insults[] = {
 
+
+    "User is a cunt.",
+    "User is a fucking cocksplat!",
+    "Buttplug face.",
+    "You incompressible jizztrumpet!",
+    "You tiny fingered, Cheeto-faced, ferret wearing shitgibbon.",
+    "You mangled apricot hellbeast.",
+    "You numpty.",
+    "You cockwomble.",
+    "You toupéd fucktrumpet",
     "If you keep this secret, this strawberry is yours.",
     "Just what do you think you're doing Dave?",
     "It can only be attributed to human error.",
