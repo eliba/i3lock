@@ -63,6 +63,9 @@ extern bool show_failed_attempts;
 /* Number of failed unlock attempts. */
 extern int failed_attempts;
 
+/* Whether insults should be printed. */
+extern bool show_offense;
+
 /*******************************************************************************
  * Variables defined in xcb.c.
  ******************************************************************************/
@@ -217,7 +220,9 @@ xcb_pixmap_t draw_image(uint32_t *resolution) {
                 break;
             case STATE_PAM_WRONG:
                 text = "wrong!";
-                insult = INSULT;
+                if (show_offense == true) {
+                    insult = INSULT;
+                }
                 break;
             case STATE_I3LOCK_LOCK_FAILED:
                 text = "lock failed!";
