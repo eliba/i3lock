@@ -27,6 +27,7 @@
 #define BUTTON_CENTER (BUTTON_RADIUS + 500)
 #define BUTTON_DIAMETER (2 * BUTTON_SPACE)
 #define TEXT_OFFSET 200
+#define INSULT_FRAME_OFFSET 10
 
 /*******************************************************************************
  * Variables defined in i3lock.c.
@@ -241,24 +242,38 @@ xcb_pixmap_t draw_image(uint32_t *resolution) {
                 break;
         }
 
+        double x, y;
         if (text) {
             cairo_text_extents_t extents;
-            cairo_text_extents_t insult_extents;
-            double x, y;
 
             cairo_text_extents(ctx, text, &extents);
-            cairo_text_extents(ctx, insult, &insult_extents);
             x = BUTTON_CENTER - ((extents.width / 2) + extents.x_bearing);
             y = BUTTON_CENTER - ((extents.height / 2) + extents.y_bearing);
 
             cairo_move_to(ctx, x, y);
             cairo_show_text(ctx, text);
             cairo_close_path(ctx);
+        }
 
+        if (insult) {
+            cairo_text_extents_t insult_extents;
+            //get insults dimensions to create the frame
+            cairo_text_extents(ctx, insult, &insult_extents);
+
+            //draw the background-frame for insult-string
+            y += TEXT_OFFSET + INSULT_FRAME_OFFSET / 2;
             x = BUTTON_CENTER - ((insult_extents.width / 2) + insult_extents.x_bearing);
+            cairo_rectangle(ctx, x, y, insult_extents.width, -insult_extents.height);
+            cairo_set_source_rgb(ctx, 1, 1, 1);
+            cairo_fill(ctx);
+
+            //draw the text on top of the frame
+            cairo_set_source_rgb(ctx, 0, 0, 0);
+            cairo_text_extents(ctx, insult, &insult_extents);
+            x = BUTTON_CENTER - ((insult_extents.width / 2) + insult_extents.x_bearing);
+            y = BUTTON_CENTER - ((insult_extents.height / 2) + insult_extents.y_bearing);
             cairo_move_to(ctx, x, y + TEXT_OFFSET);
             cairo_show_text(ctx, insult);
-            cairo_close_path(ctx);
         }
 
         if (pam_state == STATE_PAM_WRONG && (modifier_string != NULL)) {
