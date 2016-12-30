@@ -64,7 +64,7 @@ extern bool show_failed_attempts;
 extern int failed_attempts;
 
 /* Whether insults should be printed. */
-extern bool show_offense;
+extern bool show_insults;
 
 /*******************************************************************************
  * Variables defined in xcb.c.
@@ -220,7 +220,7 @@ xcb_pixmap_t draw_image(uint32_t *resolution) {
                 break;
             case STATE_PAM_WRONG:
                 text = "wrong!";
-                if (show_offense == true) {
+                if (show_insults == true) {
                     insult = INSULT;
                 }
                 break;

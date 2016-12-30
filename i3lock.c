@@ -46,6 +46,7 @@ typedef void (*ev_callback_t)(EV_P_ ev_timer *w, int revents);
 static void input_done(void);
 
 char color[7] = "ffffff";
+char insults_color[7] = "000000";
 uint32_t last_resolution[2];
 xcb_window_t win;
 static xcb_cursor_t cursor;
@@ -67,7 +68,7 @@ extern pam_state_t pam_state;
 int failed_attempts = 0;
 bool show_failed_attempts = false;
 bool retry_verification = false;
-bool show_offense = false;
+bool show_insults = false;
 
 static struct xkb_state *xkb_state;
 static struct xkb_context *xkb_context;
@@ -803,8 +804,9 @@ int main(int argc, char *argv[]) {
         {"ignore-empty-password", no_argument, NULL, 'e'},
         {"inactivity-timeout", required_argument, NULL, 'I'},
         {"show-failed-attempts", no_argument, NULL, 'f'},
-        {"show-offence", no_argument, NULL, 'o'},
-        {NULL, no_argument, NULL, 0}};
+        {"show-insults", no_argument, NULL, 'o'},
+        {"insults-colors", required_argument, NULL, 'O'},
+	{NULL, no_argument, NULL, 0}};
 
     if ((pw = getpwuid(getuid())) == NULL)
         err(EXIT_FAILURE, "getpwuid() failed");
@@ -839,8 +841,21 @@ int main(int argc, char *argv[]) {
                 if (strlen(arg) != 6 || sscanf(arg, "%06[0-9a-fA-F]", color) != 1)
                     errx(EXIT_FAILURE, "color is invalid, it must be given in 3-byte hexadecimal format: rrggbb\n");
 
-                break;
+              
+		break;
             }
+
+	    case 'O': {
+		char *arg = optarg;
+		    
+		if (arg[0] == '#')
+			arg++;
+
+		 if (strlen(arg) != 6 || sscanf(arg, "%06[0-9a-fA-F]", insults_color) != 1)
+                 errx(EXIT_FAILURE, "insluts color is invalid, it must be given in 3-byte hexadecimal format: rrggbb\n");
+             
+		
+		}
             case 'u':
                 unlock_indicator = false;
                 break;
@@ -870,9 +885,9 @@ int main(int argc, char *argv[]) {
                 show_failed_attempts = true;
                 break;
             case 'o':
-                show_offense = true;
+                show_insults = true;
                 break;
-            default:
+	    default:
                 errx(EXIT_FAILURE, "Syntax: i3lock [-v] [-n] [-b] [-d] [-c color] [-u] [-p win|default]"
                                    " [-i image.png] [-t] [-e] [-I timeout] [-f] [-o]");
         }
